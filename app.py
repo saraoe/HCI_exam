@@ -5,7 +5,7 @@ import streamlit as st
 from io import StringIO 
 from annotated_text import annotated_text
 
-from src.text_anonymization import anon_text
+from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
 from src.util import create_zip
 
 st.title("Text Anonymization")
@@ -27,7 +27,30 @@ if uploaded_files:
     # view the file
     if 'n_file' not in st.session_state:
         st.session_state['n_file'] = 0
+
+    i = st.session_state['n_file']
+    name, text = texts[i]
+
+    # self annotated tokens
+    st.write('Select tokens that are not annotated correctly')
+    col1, col2, col3 = st.columns(3)
+    per_tokens = col1.multiselect("Name tokens:",
+                                     get_non_entity_tokens(text))
+    loc_tokens = col2.multiselect("Location tokens:",
+                                     get_non_entity_tokens(text))
+    org_tokens = col3.multiselect("Organization tokens:",
+                                     get_non_entity_tokens(text))
+    non_entity_tokens = st.multiselect("Non entity tokens:",
+                                        get_entity_tokens(text))
+
+    # annotated text
+    tokens = anon_text(text, ["LOC", "PER", "ORG"], per_tokens)
+    annotated_text(*tokens)
+    # text name
+    st.markdown(f"<h1 style='text-align:right;color:grey; font-size:12px;'><i>Text: {name}</i></h1>", 
+                unsafe_allow_html=True)
     
+    # buttons
     col1, col2, col3, col4, col5 = st.columns(5)
     if col1.button('Previous text'):#, disabled = (i == 0)):
         if st.session_state['n_file'] == 0:
@@ -37,13 +60,7 @@ if uploaded_files:
         if st.session_state['n_file'] == len(texts)-1:
             st.session_state['n_file'] = -1
         st.session_state['n_file'] += 1
-
-    i = st.session_state['n_file']
     col3.write(f'text {i+1} of {len(texts)}')
-    name, text = texts[i]
-    st.subheader(name)
-    tokens = anon_text(text, ["LOC", "PER", "ORG"])
-    annotated_text(*tokens)
 
     # save the anonymized texts
     anonymized = []
