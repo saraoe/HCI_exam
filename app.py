@@ -47,10 +47,14 @@ if uploaded_files:
                                                get_entity_tokens(text))
 
     # annotated text
-    tokens = anon_text(text, ["LOC", "PER", "ORG"], per_tokens)
+    tokens = anon_text(text, ["LOC", "PER", "ORG"], 
+                       per_tokens,
+                       loc_tokens,
+                       org_tokens,
+                       non_entity_tokens)
     annotated_text(*tokens)
     # text name
-    st.markdown(f"<h1 style='text-align:right;color:grey; font-size:12px;'><i>Text: {name}</i></h1>", 
+    st.markdown(f"<h1 style='text-align:right;color:grey; font-size:12px;'><i>Filename: {name}</i></h1>", 
                 unsafe_allow_html=True)
     
     # buttons
