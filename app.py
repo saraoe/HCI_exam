@@ -6,15 +6,19 @@ from io import StringIO
 from annotated_text import annotated_text
 
 from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
-from src.util import create_zip
+from src.util import create_zip, v_spacer
 
 st.title("Text Anonymization")
 
 # st.text("Insert description of app")
 
 texts = []
-uploaded_files = st.sidebar.file_uploader("Choose a one or multiple files", 
-                                          accept_multiple_files=True)
+with st.expander("Uploaded files"):
+    uploaded_files = st.file_uploader("Choose a one or multiple files", 
+                                      accept_multiple_files=True)
+
+v_spacer(height=5)
+
 if uploaded_files:
     for uploaded_file in uploaded_files:
         name = uploaded_file.name
@@ -32,16 +36,15 @@ if uploaded_files:
     name, text = texts[i]
 
     # self annotated tokens
-    st.write('Select tokens that are not annotated correctly')
-    col1, col2, col3 = st.columns(3)
-    per_tokens = col1.multiselect("Name tokens:",
-                                     get_non_entity_tokens(text))
-    loc_tokens = col2.multiselect("Location tokens:",
-                                     get_non_entity_tokens(text))
-    org_tokens = col3.multiselect("Organization tokens:",
-                                     get_non_entity_tokens(text))
-    non_entity_tokens = st.multiselect("Non entity tokens:",
-                                        get_entity_tokens(text))
+    st.sidebar.write('Select tokens that are not annotated correctly')
+    per_tokens = st.sidebar.multiselect("Name tokens:",
+                                        get_non_entity_tokens(text))
+    loc_tokens = st.sidebar.multiselect("Location tokens:",
+                                        get_non_entity_tokens(text))
+    org_tokens = st.sidebar.multiselect("Organization tokens:",
+                                        get_non_entity_tokens(text))
+    non_entity_tokens = st.sidebar.multiselect("Non entity tokens:",
+                                               get_entity_tokens(text))
 
     # annotated text
     tokens = anon_text(text, ["LOC", "PER", "ORG"], per_tokens)
@@ -51,6 +54,7 @@ if uploaded_files:
                 unsafe_allow_html=True)
     
     # buttons
+    v_spacer(height=3)
     col1, col2, col3, col4, col5 = st.columns(5)
     if col1.button('Previous text'):#, disabled = (i == 0)):
         if st.session_state['n_file'] == 0:
@@ -74,7 +78,8 @@ if uploaded_files:
         f.write(' '.join(anonymized))
 
 
-anon_zip = create_zip()
-st.sidebar.download_button("Download anonymized texts", 
-                            anon_zip, 
-                            file_name="anonymized_texts.zip")
+    _, col2, _ = st.columns(3)
+    anon_zip = create_zip()
+    col2.download_button("Download anonymized texts", 
+                                anon_zip, 
+                                file_name="anonymized_texts.zip")
