@@ -41,8 +41,13 @@ def anon_text(text: str,
     return tokens
 
 
-def get_non_entity_tokens(text):
-    return [token.text for token in nlp(text) if not token.ent_type_]
+def get_non_entity_tokens(text, exclude_tokens) -> List[str]:
+    def _gen(text, exclude_tokens):
+        for token in nlp(text):
+            if not token.ent_type_ and token.text not in exclude_tokens:
+                yield token.text
+    # return [token.text for token in nlp(text) if not token.ent_type_]
+    return list(_gen(text, exclude_tokens))
 
 
 def get_entity_tokens(text):
