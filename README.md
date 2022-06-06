@@ -10,10 +10,23 @@ The organization of the project is as follows:
 
 ```
 ├── README.md                  <- The top-level README for this project.
-├── example_data               <- data sets for running example   
-│   └── .csv    
-├── src                        
-│   └── ...
+├── example_data               <- documents for running example   
+│   └── .txt
+├── descriptions
+│   └── ...    
+├── src   
+│   ├── text_anonymization.py                 
+│   └── util.py
 ├──  requirement.txt           <- A requirements file of the required packages.
 └──  app.py                    <- streamlit app
 ```
+
+## Run app
+To run the app clone the repository and run the following
+```
+pip install -r requirements.txt
+```
+```
+streamlit run app.py
+```
+You can use you own files to test the app or use the documents in the folder ```example_data```.
