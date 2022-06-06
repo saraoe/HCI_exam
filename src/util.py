@@ -4,6 +4,7 @@ util functions
 import streamlit as st
 from zipfile import ZipFile
 from glob import glob
+import os
 
 
 def v_spacer(height: int, sb: bool=False) -> None:
@@ -19,6 +20,17 @@ def v_spacer(height: int, sb: bool=False) -> None:
             st.sidebar.write('\n')
         else:
             st.write('\n')
+
+
+def remove_files(folder: str):
+    '''
+    removes files in folder
+
+    Args:
+        folder (str): name of folder
+    '''
+    for file in glob(f'{folder}/*'):
+        os.remove(file)
 
 
 def create_zip():
