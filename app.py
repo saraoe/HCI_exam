@@ -8,14 +8,16 @@ from annotated_text import annotated_text
 from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
 from src.util import create_zip, v_spacer, remove_files
 
-# st.title("Text Anonymization")
-app_description = "Insert description of app"
+with open("descriptions/app.txt", 'r') as f:
+    app_description = f.read()
+with open("descriptions/ner_tags.txt", 'r') as f:
+    ner_description = f.read()
 
 # session states
 if "uploaded_files" not in st.session_state:
         st.session_state["uploaded_files"] = {}
 if "entities" not in st.session_state:
-        st.session_state['entities'] = ["LOC", "PER", "ORG"]
+        st.session_state['entities'] = ["PER", "LOC", "ORG"]
 if "anon_texts" not in st.session_state:
     st.session_state['anon_texts'] = {}
 if "self_annotate" not in st.session_state:
@@ -30,7 +32,7 @@ menu = st.sidebar.radio("Go to", ["Welcome page",
     
 if menu == "Welcome page":
     st.title("Text Anonymization")
-    st.write(app_description)
+    st.markdown(app_description)
 
 if menu == "Upload and anonymization options":
     st.subheader(":file_folder: Upload documents")
@@ -52,28 +54,29 @@ if menu == "Upload and anonymization options":
                     col2.write('')
                 if col3.button('remove', key=f'{i}'):
                     st.session_state["uploaded_files"].pop(name)
-                    st.session_state['anon_texts'].pop(name)
+                    if name in st.session_state['anon_texts'].keys():
+                        st.session_state['anon_texts'].pop(name)
                     st.experimental_rerun()
 
     if uploaded_files:
-        # make list of texts
-        texts = {}
+        # make dict of texts
         for uploaded_file in uploaded_files:
             name = uploaded_file.name
             # To convert to a string based IO:
             stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
             # To read file as string:
             string_data = stringio.read()
-            texts[name] = string_data
-        st.session_state["uploaded_files"] = texts
+            st.session_state["uploaded_files"][name] = string_data
     
     v_spacer(height=2)
     st.subheader(":hammer: Anonymization options")
     # select enities
     entities = st.multiselect("Entities to anonymize", 
-                              ["LOC", "PER", "ORG"], 
+                              ["PER", "LOC",  "ORG"], 
                               default=st.session_state['entities'])
     st.session_state['entities'] = entities
+    with st.expander("Explanation of tags"):
+        st.markdown(ner_description)
 
 if menu == "Assess documents":
     st.subheader(":eyes: Assess documents")
@@ -86,7 +89,8 @@ if menu == "Assess documents":
         # view the file
         if 'n_file' not in st.session_state:
             st.session_state['n_file'] = 0
-
+        if names_texts and st.session_state['n_file'] >= len(names_texts):
+            st.session_state['n_file'] = len(names_texts)-1
         i = st.session_state['n_file']
         name, text = names_texts[i]
 
@@ -171,7 +175,7 @@ if menu == "Download documents":
         # download files
         remove_files("anonymized_texts")
         for name, text in st.session_state['anon_texts'].items():
-            with open(f'anonymized_texts/{prefix}_{name}', 'w') as f:
+            with open(f'anonymized_texts/{prefix}_{name}', 'w', encoding="utf-8") as f:
                 f.write(text)
         anon_zip = create_zip()
         v_spacer(height = 2)
@@ -181,6 +185,7 @@ if menu == "Download documents":
                             file_name="anonymized_texts.zip")
 
 if st.session_state["uploaded_files"]:
+    v_spacer(height=2, sb=True)
     st.sidebar.write("**Uploaded documents**")
     col1, col2 = st.sidebar.columns(2)
     for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
