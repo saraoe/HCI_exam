@@ -8,12 +8,12 @@ from annotated_text import annotated_text
 from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
 from src.util import create_zip, v_spacer, remove_files
 
-st.title("Text Anonymization")
+# st.title("Text Anonymization")
 app_description = "Insert description of app"
 
 # session states
 if "uploaded_files" not in st.session_state:
-        st.session_state["uploaded_files"] = None
+        st.session_state["uploaded_files"] = {}
 if "entities" not in st.session_state:
         st.session_state['entities'] = ["LOC", "PER", "ORG"]
 if "anon_texts" not in st.session_state:
@@ -22,32 +22,59 @@ if "self_annotate" not in st.session_state:
     st.session_state['self_annotate'] = {}
 
 # menu
-menu = st.sidebar.radio("", ["Welcome page", 
-                             "Upload documents and anonymization options", 
+st.sidebar.subheader('Navigation')
+menu = st.sidebar.radio("Go to", ["Welcome page", 
+                             "Upload and anonymization options", 
                              "Assess documents",
                              "Download documents"])
+if st.session_state["uploaded_files"]:
+    st.sidebar.write("**Uploaded documents**")
+    col1, col2 = st.sidebar.columns(2)
+    for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
+        col1.write(name)
+        if name in st.session_state['anon_texts']:
+            anno_symbol = ":heavy_check_mark:"  
+        else:
+            anno_symbol = ':heavy_multiplication_x:'
+        col2.write(f'Annotated: {anno_symbol}')
     
 if menu == "Welcome page":
+    st.title("Text Anonymization")
     st.write(app_description)
 
-if menu == "Upload documents and anonymization options":
+if menu == "Upload and anonymization options":
     st.subheader(":file_folder: Upload documents")
     uploaded_files = st.file_uploader("You can choose one or multiple files", 
-                                        accept_multiple_files=True,
-                                        key = "1")
+                                        accept_multiple_files=True)
+    
+    if st.session_state['uploaded_files']:
+        with st.expander('Already uploaded documents'):
+            col1, col2, col3 = st.columns(3)
+            for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
+                col1.write(name)
+                if name in st.session_state['anon_texts']:
+                    anno_symbol = ":heavy_check_mark:"  
+                else:
+                    anno_symbol = ':heavy_multiplication_x:'
+                col2.write(f'Annotated: {anno_symbol}')
+                if i % 2 == 0:
+                    col1.write('')
+                    col2.write('')
+                if col3.button('remove', key=f'{i}'):
+                    st.session_state["uploaded_files"].pop(name)
+                    st.experimental_rerun()
+
     if uploaded_files:
         # make list of texts
-        texts = []
+        texts = {}
         for uploaded_file in uploaded_files:
             name = uploaded_file.name
             # To convert to a string based IO:
             stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
             # To read file as string:
             string_data = stringio.read()
-            texts.append((name, string_data))
+            texts[name] = string_data
         st.session_state["uploaded_files"] = texts
-    # else:
-    #     st.session_state["uploaded_files"] = None
     
     v_spacer(height=2)
     st.subheader(":hammer: Anonymization options")
@@ -62,13 +89,15 @@ if menu == "Assess documents":
     if not st.session_state['uploaded_files']:
         st.write("You need to upload documents to assess the anonymization")
     else:
-        texts = st.session_state["uploaded_files"]
+        names_texts=[]
+        for elem in st.session_state["uploaded_files"].items():
+            names_texts.append(elem)
         # view the file
         if 'n_file' not in st.session_state:
             st.session_state['n_file'] = 0
 
         i = st.session_state['n_file']
-        name, text = texts[i]
+        name, text = names_texts[i]
 
         # self annotated tokens
         with st.expander('Select tokens that are not annotated correctly'):
@@ -114,12 +143,12 @@ if menu == "Assess documents":
             #     st.session_state['n_file'] = len(texts)
             st.session_state['n_file'] -= 1
             st.experimental_rerun()
-        if col5.button('Next text', disabled = (i == len(texts)-1)):
+        if col5.button('Next text', disabled = (i == len(names_texts)-1)):
             # if st.session_state['n_file'] == len(texts)-1:
             #     st.session_state['n_file'] = -1
             st.session_state['n_file'] += 1
             st.experimental_rerun()
-        col3.write(f'text {i+1} of {len(texts)}')
+        col3.write(f'text {i+1} of {len(names_texts)}')
 
         # save the anonymized texts
         anonymized = []
@@ -133,11 +162,12 @@ if menu == "Assess documents":
 if menu == "Download documents":
     st.subheader(":inbox_tray: Download documents")
 
-    if not st.session_state['uploaded_files']:
+    if not st.session_state['anon_texts']:
         st.write("You need to upload and assess the documents, before you can download them.")
     else:
         # settings
-        st.write("You can chose the file format you want the downloaded files in, and the prefix of the files.")
+        st.write(f'You have anonymized {len(st.session_state["anon_texts"])} documents.')
+        st.write("You can chose the file type you want the downloaded files in and the prefix of the anonymized files.")
         file_type = st.selectbox("File type", [".txt", ".pdf", ".docx"])
         prefix = st.text_input("Prefix", "anon")
 
