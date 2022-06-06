@@ -29,11 +29,11 @@ def anon_text(text: str,
     for token in doc:
         if token.text in non_entities:
             tokens.append(" " + token.text + " ")
-        elif (token.ent_type_ == "PERSON") or (token.text in selected_per) & ("PER" in selected_entities):
+        elif ((token.ent_type_ == "PERSON") or (token.text in selected_per)) & ("PER" in selected_entities):
             tokens.append(("[NAME]", token.text, "#faa"))
-        elif (token.ent_type_ in ["GPE", "LOC"]) or (token.text in selected_loc) & ("LOC" in selected_entities):
+        elif ((token.ent_type_ in ["GPE", "LOC"]) or (token.text in selected_loc)) & ("LOC" in selected_entities):
             tokens.append(("[LOCATION]", token.text, "#fda"))
-        elif (token.ent_type_ == "ORG") or (token.text in selected_org) & ("ORG" in selected_entities):
+        elif ((token.ent_type_ == "ORG") or (token.text in selected_org)) & ("ORG" in selected_entities):
             tokens.append(('[ORGANIZATION]', token.text, "#afa"))
         else:
             tokens.append(" " + token.text + " ")
