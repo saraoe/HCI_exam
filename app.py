@@ -27,16 +27,6 @@ menu = st.sidebar.radio("Go to", ["Welcome page",
                              "Upload and anonymization options", 
                              "Assess documents",
                              "Download documents"])
-if st.session_state["uploaded_files"]:
-    st.sidebar.write("**Uploaded documents**")
-    col1, col2 = st.sidebar.columns(2)
-    for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
-        col1.write(name)
-        if name in st.session_state['anon_texts']:
-            anno_symbol = ":heavy_check_mark:"  
-        else:
-            anno_symbol = ':heavy_multiplication_x:'
-        col2.write(f'Annotated: {anno_symbol}')
     
 if menu == "Welcome page":
     st.title("Text Anonymization")
@@ -135,8 +125,19 @@ if menu == "Assess documents":
         st.markdown(f"<h1 style='text-align:right;color:grey; font-size:12px;'><i>Filename: {name}</i></h1>", 
                     unsafe_allow_html=True)
         
-        # buttons
         v_spacer(height=3)
+        # save the anonymized texts
+        _, col2, _ = st.columns(3)
+        if col2.button('Save annotations'):
+            anonymized = []
+            for token in tokens:
+                if isinstance(token, tuple):
+                    anonymized.append(token[0])
+                else:
+                    anonymized.append(token)
+            st.session_state['anon_texts'][name] = ' '.join(anonymized)
+        
+        # buttons
         col1, col2, col3, col4, col5 = st.columns(5)
         if col1.button('Previous text', disabled = (i == 0)):
             # if st.session_state['n_file'] == 0:
@@ -149,15 +150,6 @@ if menu == "Assess documents":
             st.session_state['n_file'] += 1
             st.experimental_rerun()
         col3.write(f'text {i+1} of {len(names_texts)}')
-
-        # save the anonymized texts
-        anonymized = []
-        for token in tokens:
-            if isinstance(token, tuple):
-                anonymized.append(token[0])
-            else:
-                anonymized.append(token)
-        st.session_state['anon_texts'][name] = ' '.join(anonymized)
 
 if menu == "Download documents":
     st.subheader(":inbox_tray: Download documents")
@@ -182,3 +174,14 @@ if menu == "Download documents":
         col2.download_button("Download anonymized texts", 
                             anon_zip, 
                             file_name="anonymized_texts.zip")
+
+if st.session_state["uploaded_files"]:
+    st.sidebar.write("**Uploaded documents**")
+    col1, col2 = st.sidebar.columns(2)
+    for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
+        col1.write(name)
+        if name in st.session_state['anon_texts']:
+            anno_symbol = ":heavy_check_mark:"  
+        else:
+            anno_symbol = ':heavy_multiplication_x:'
+        col2.write(f'Annotated: {anno_symbol}')
