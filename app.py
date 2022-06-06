@@ -97,16 +97,20 @@ if menu == "Assess documents":
             col1, col2 = st.columns(2)
             per_tokens = col1.multiselect("Name tokens:",
                                           get_non_entity_tokens(text, []),
-                                          default = self_anno[0])
+                                          default = self_anno[0],
+                                          disabled=("PER" not in st.session_state['entities']))
             loc_tokens = col2.multiselect("Location tokens:",
                                           get_non_entity_tokens(text, []),
-                                          default = self_anno[1])
+                                          default = self_anno[1],
+                                          disabled=("LOC" not in st.session_state['entities']))
             org_tokens = col1.multiselect("Organization tokens:",
                                           get_non_entity_tokens(text, []),
-                                          default = self_anno[2])
+                                          default = self_anno[2],
+                                          disabled=("ORG" not in st.session_state['entities']))
             non_entity_tokens = col2.multiselect("Not entity tokens:",
-                                                  get_entity_tokens(text),
-                                                  default = self_anno[3])
+                                                 get_entity_tokens(text, 
+                                                        st.session_state['entities']),
+                                                 default = self_anno[3])
             st.session_state["self_annotate"][name] = [
                 per_tokens,
                 loc_tokens,

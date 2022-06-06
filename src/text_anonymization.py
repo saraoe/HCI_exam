@@ -55,14 +55,21 @@ def anon_text(text: str,
     return tokens
 
 
-def get_non_entity_tokens(text, exclude_tokens) -> List[str]:
+def get_non_entity_tokens(text: str, exclude_tokens: List[str]) -> List[str]:
     def _gen(text, exclude_tokens):
         for token in nlp(text):
+            if token.is_punct:
+                continue
             if not token.ent_type_ and token.text not in exclude_tokens:
                 yield token.text
-    # return [token.text for token in nlp(text) if not token.ent_type_]
-    return list(_gen(text, exclude_tokens))
+    return list(set(_gen(text, exclude_tokens)))
 
 
-def get_entity_tokens(text):
-    return [token.text for token in nlp(text) if token.ent_type_]
+def get_entity_tokens(text: str, selected_entities: List[str]) -> List[str]:
+    def _gen(text, selected_entities):
+        for token in nlp(text):
+            if token.is_punct:
+                continue
+            if token.ent_type_ and token.ent_type_ in selected_entities:
+                yield token.text
+    return list(set(_gen(text, selected_entities)))
