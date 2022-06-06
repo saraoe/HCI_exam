@@ -6,7 +6,7 @@ from io import StringIO
 from annotated_text import annotated_text
 
 from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
-from src.util import create_zip, v_spacer
+from src.util import create_zip, v_spacer, remove_files
 
 st.title("Text Anonymization")
 app_description = "Insert description of app"
@@ -18,6 +18,8 @@ if "entities" not in st.session_state:
         st.session_state['entities'] = ["LOC", "PER", "ORG"]
 if "anon_texts" not in st.session_state:
     st.session_state['anon_texts'] = {}
+if "self_annotate" not in st.session_state:
+    st.session_state['self_annotate'] = {}
 
 # menu
 menu = st.sidebar.radio("", ["Welcome page", 
@@ -70,15 +72,27 @@ if menu == "Assess documents":
 
         # self annotated tokens
         with st.expander('Select tokens that are not annotated correctly'):
+            self_anno = st.session_state["self_annotate"].get(name, 
+                                                              [[],[],[],[]])
             col1, col2 = st.columns(2)
             per_tokens = col1.multiselect("Name tokens:",
-                                          get_non_entity_tokens(text, []))
+                                          get_non_entity_tokens(text, []),
+                                          default = self_anno[0])
             loc_tokens = col2.multiselect("Location tokens:",
-                                          get_non_entity_tokens(text, []))
+                                          get_non_entity_tokens(text, []),
+                                          default = self_anno[1])
             org_tokens = col1.multiselect("Organization tokens:",
-                                          get_non_entity_tokens(text, per_tokens+loc_tokens))
-            non_entity_tokens = col2.multiselect("Non entity tokens:",
-                                                  get_entity_tokens(text))
+                                          get_non_entity_tokens(text, []),
+                                          default = self_anno[2])
+            non_entity_tokens = col2.multiselect("Not entity tokens:",
+                                                  get_entity_tokens(text),
+                                                  default = self_anno[3])
+            st.session_state["self_annotate"][name] = [
+                per_tokens,
+                loc_tokens,
+                org_tokens,
+                non_entity_tokens
+            ]
 
         # annotated text
         v_spacer(height=3)
@@ -116,9 +130,6 @@ if menu == "Assess documents":
                 anonymized.append(token)
         st.session_state['anon_texts'][name] = ' '.join(anonymized)
 
-        # with open(f'anonymized_texts/anon_{name}', 'w') as f:
-        #     f.write(' '.join(anonymized))
-
 if menu == "Download documents":
     st.subheader(":inbox_tray: Download documents")
 
@@ -129,7 +140,9 @@ if menu == "Download documents":
         st.write("You can chose the file format you want the downloaded files in, and the prefix of the files.")
         file_type = st.selectbox("File type", [".txt", ".pdf", ".docx"])
         prefix = st.text_input("Prefix", "anon")
+
         # download files
+        remove_files("anonymized_texts")
         for name, text in st.session_state['anon_texts'].items():
             with open(f'anonymized_texts/{prefix}_{name}', 'w') as f:
                 f.write(text)
