@@ -52,6 +52,7 @@ if menu == "Upload and anonymization options":
                     col2.write('')
                 if col3.button('remove', key=f'{i}'):
                     st.session_state["uploaded_files"].pop(name)
+                    st.session_state['anon_texts'].pop(name)
                     st.experimental_rerun()
 
     if uploaded_files:
