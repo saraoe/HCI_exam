@@ -66,10 +66,17 @@ def get_non_entity_tokens(text: str, exclude_tokens: List[str]) -> List[str]:
 
 
 def get_entity_tokens(text: str, selected_entities: List[str]) -> List[str]:
+    spacy_ents = []
+    if "PER" in selected_entities:
+        spacy_ents.append("PERSON")
+    if "LOC" in selected_entities:
+        spacy_ents += ["LOC", "GPE"]
+    if "ORG" in selected_entities:
+        spacy_ents.append("ORG")
     def _gen(text, selected_entities):
         for token in nlp(text):
             if token.is_punct:
                 continue
             if token.ent_type_ and token.ent_type_ in selected_entities:
                 yield token.text
-    return list(set(_gen(text, selected_entities)))
+    return list(set(_gen(text, spacy_ents)))
