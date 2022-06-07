@@ -3,15 +3,22 @@ Streamlit app for the anonymization tool
 '''
 import streamlit as st
 from io import StringIO 
+from PIL import Image
 from annotated_text import annotated_text
 
 from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
 from src.util import create_zip, v_spacer, remove_files
 
+# descriptions
 with open("descriptions/app.txt", 'r') as f:
     app_description = f.read()
 with open("descriptions/ner_tags.txt", 'r') as f:
     ner_description = f.read()
+assess_description = """Assess the annotations made by the model 
+and change annotations that are incorrect by selecting the tokens
+in the expander below."""
+
+logo = Image.open('logo-removebg.png')
 
 # session states
 if "uploaded_files" not in st.session_state:
@@ -24,39 +31,44 @@ if "self_annotate" not in st.session_state:
     st.session_state['self_annotate'] = {}
 
 # menu
+st.sidebar.image(logo)
 st.sidebar.subheader('Navigation')
-menu = st.sidebar.radio("Go to", ["Welcome page", 
-                             "Upload and anonymization options", 
+menu = st.sidebar.radio("Go to", ["Getting started", 
+                             "Upload documents",
+                             "Anonymization options", 
                              "Assess documents",
                              "Download documents"])
     
-if menu == "Welcome page":
-    st.title("Text Anonymization")
+if menu == "Getting started":
+    st.image(logo)
     st.markdown(app_description)
 
-if menu == "Upload and anonymization options":
+if menu == "Upload documents":
     st.subheader(":file_folder: Upload documents")
+    st.write('**Upload new documents:**')
     uploaded_files = st.file_uploader("You can choose one or multiple files", 
                                         accept_multiple_files=True)
     
+    v_spacer(height=2)
+    st.write('**Already uploaded documents:**')
     if st.session_state['uploaded_files']:
-        with st.expander('Already uploaded documents'):
-            col1, col2, col3 = st.columns(3)
-            for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
-                col1.write(name)
-                if name in st.session_state['anon_texts']:
-                    anno_symbol = ":heavy_check_mark:"  
-                else:
-                    anno_symbol = ':heavy_multiplication_x:'
-                col2.write(f'Annotated: {anno_symbol}')
-                if i % 2 == 0:
-                    col1.write('')
-                    col2.write('')
-                if col3.button('remove', key=f'{i}'):
-                    st.session_state["uploaded_files"].pop(name)
-                    if name in st.session_state['anon_texts'].keys():
-                        st.session_state['anon_texts'].pop(name)
-                    st.experimental_rerun()
+        # with st.expander('Already uploaded documents'):
+        col1, col2, col3 = st.columns(3)
+        for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
+            col1.write(name)
+            if name in st.session_state['anon_texts']:
+                anno_symbol = ":heavy_check_mark:"  
+            else:
+                anno_symbol = ':heavy_multiplication_x:'
+            col2.write(f'Annotated: {anno_symbol}')
+            if i % 2 == 0:
+                col1.write('')
+                col2.write('')
+            if col3.button('remove', key=f'{i}'):
+                st.session_state["uploaded_files"].pop(name)
+                if name in st.session_state['anon_texts'].keys():
+                    st.session_state['anon_texts'].pop(name)
+                st.experimental_rerun()
 
     if uploaded_files:
         # make dict of texts
@@ -68,7 +80,7 @@ if menu == "Upload and anonymization options":
             string_data = stringio.read()
             st.session_state["uploaded_files"][name] = string_data
     
-    v_spacer(height=2)
+if menu == "Anonymization options":
     st.subheader(":hammer: Anonymization options")
     # select enities
     entities = st.multiselect("Entities to anonymize", 
@@ -81,8 +93,9 @@ if menu == "Upload and anonymization options":
 if menu == "Assess documents":
     st.subheader(":eyes: Assess documents")
     if not st.session_state['uploaded_files']:
-        st.write("You need to upload documents to assess the anonymization")
+        st.error("You need to upload documents to assess the anonymization")
     else:
+        st.write(assess_description)
         names_texts=[]
         for elem in st.session_state["uploaded_files"].items():
             names_texts.append(elem)
@@ -164,10 +177,10 @@ if menu == "Download documents":
     st.subheader(":inbox_tray: Download documents")
 
     if not st.session_state['anon_texts']:
-        st.write("You need to upload and assess the documents, before you can download them.")
+        st.error("You need to upload and assess the documents before you can download them.")
     else:
         # settings
-        st.write(f'You have anonymized {len(st.session_state["anon_texts"])} documents.')
+        st.write(f'You have anonymized {len(st.session_state["anon_texts"])} document(s).')
         st.write("You can chose the file type you want the downloaded files in and the prefix of the anonymized files.")
         file_type = st.selectbox("File type", [".txt", ".pdf", ".docx"])
         prefix = st.text_input("Prefix", "anon")
@@ -184,9 +197,10 @@ if menu == "Download documents":
                             anon_zip, 
                             file_name="anonymized_texts.zip")
 
+# sidebar uploaded documents
+v_spacer(height=2, sb=True)
+st.sidebar.write("**Uploaded documents**")
 if st.session_state["uploaded_files"]:
-    v_spacer(height=2, sb=True)
-    st.sidebar.write("**Uploaded documents**")
     col1, col2 = st.sidebar.columns(2)
     for i, (name, _) in enumerate(st.session_state["uploaded_files"].items()):
         col1.write(name)
@@ -195,3 +209,5 @@ if st.session_state["uploaded_files"]:
         else:
             anno_symbol = ':heavy_multiplication_x:'
         col2.write(f'Annotated: {anno_symbol}')
+else:
+    st.sidebar.write('*None*')
