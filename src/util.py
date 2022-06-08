@@ -5,6 +5,7 @@ import streamlit as st
 from zipfile import ZipFile
 from glob import glob
 import os
+from PIL import Image
 
 
 def v_spacer(height: int, sb: bool=False) -> None:
@@ -49,3 +50,9 @@ def create_zip():
     with open(ZipfileDotZip, "rb") as f:
         bytes = f.read()
     return bytes
+
+
+def resize_image(image, new_size):
+    width, height = image.size
+    new_sizes = int(width*new_size), int(height*new_size)
+    return image.resize(new_sizes)

@@ -7,18 +7,21 @@ from PIL import Image
 from annotated_text import annotated_text
 
 from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
-from src.util import create_zip, v_spacer, remove_files
+from src.util import create_zip, v_spacer, remove_files, resize_image
 
 # descriptions
 with open("descriptions/app.txt", 'r') as f:
     app_description = f.read()
+with open("descriptions/pages.txt", 'r') as f:
+    pages_description = f.read()
 with open("descriptions/ner_tags.txt", 'r') as f:
     ner_description = f.read()
 assess_description = """Assess the annotations made by the model 
 and change annotations that are incorrect by selecting the tokens
 in the expander below."""
 
-logo = Image.open('logo-removebg.png')
+logo = Image.open('fig/logo-removebg.png')
+logo_size = logo.size
 
 # session states
 if "uploaded_files" not in st.session_state:
@@ -31,7 +34,7 @@ if "self_annotate" not in st.session_state:
     st.session_state['self_annotate'] = {}
 
 # menu
-st.sidebar.image(logo)
+st.sidebar.image(resize_image(logo, 0.25))
 st.sidebar.subheader('Navigation')
 menu = st.sidebar.radio("Go to", ["Getting started", 
                              "Upload documents",
@@ -40,8 +43,10 @@ menu = st.sidebar.radio("Go to", ["Getting started",
                              "Download documents"])
     
 if menu == "Getting started":
-    st.image(logo)
+    st.image(resize_image(logo, 0.6))
     st.markdown(app_description)
+    with st.expander("How to use HIanonymizer"):
+        st.markdown(pages_description)
 
 if menu == "Upload documents":
     st.subheader(":file_folder: Upload documents")
@@ -60,7 +65,7 @@ if menu == "Upload documents":
                 anno_symbol = ":heavy_check_mark:"  
             else:
                 anno_symbol = ':heavy_multiplication_x:'
-            col2.write(f'Annotated: {anno_symbol}')
+            col2.write(f'Anonymized: {anno_symbol}')
             if i % 2 == 0:
                 col1.write('')
                 col2.write('')
@@ -208,6 +213,10 @@ if st.session_state["uploaded_files"]:
             anno_symbol = ":heavy_check_mark:"  
         else:
             anno_symbol = ':heavy_multiplication_x:'
-        col2.write(f'Annotated: {anno_symbol}')
+        col2.write(f'Anonymized: {anno_symbol}')
+    
+    # save all annotations
+    if st.sidebar.button("save all annotations"):
+        pass
 else:
     st.sidebar.write('*None*')
