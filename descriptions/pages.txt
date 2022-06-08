@@ -4,12 +4,10 @@ The app consists of 4 stages:
 - Assess documents
 - Download documents
 
-Firtly, you must *upload documents* and chose the right *anonymization options*. 
-Every document must be in an individual file. Then you *assess* the 
-anonymization with the possibility to manually change the annotations. When each document is
+Firstly, you must *upload documents* and chose the right *anonymization options*. Then you *assess* the 
+anonymization with the possibility of manually changing the annotations. When each document is
 anonymized correctly, you can save the document using the button underneath the anonymized text. You also have the possibility to simply save all 
-annotations the model have made without any assessment. 
+annotations the model has made without any assessment. 
 When all anonymized documents have been saved and saved you can *download* them on the last page.
-
 
 You can always go back and forth between the different stages by using the menu on the left.
