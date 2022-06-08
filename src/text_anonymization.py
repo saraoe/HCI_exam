@@ -5,10 +5,10 @@ nlp = spacy.load('en_core_web_sm')
 
 def anon_text(text: str, 
               selected_entities: List[str], 
-              selected_per: List[str], 
-              selected_loc: List[str], 
-              selected_org: List[str],
-              non_entities: List[str]):
+              selected_per: List[str]=[], 
+              selected_loc: List[str]=[], 
+              selected_org: List[str]=[],
+              non_entities: List[str]=[]):
     '''
     Anonymyzing text using spacy ner-tags
 
@@ -53,6 +53,25 @@ def anon_text(text: str,
             tokens.append(" " + token.text + " ")
 
     return tokens
+
+
+def anonymization_str(tokens: list):
+    '''
+    gets the anonymized string
+
+    Args:
+        tokens (list): list of tokens with the anonymized as tuples
+    
+    Return
+        str: anonymized text
+    '''
+    anonymized = []
+    for token in tokens:
+        if isinstance(token, tuple):
+            anonymized.append(token[0])
+        else:
+            anonymized.append(token)
+    return ' '.join(anonymized)
 
 
 def get_non_entity_tokens(text: str, exclude_tokens: List[str]) -> List[str]:

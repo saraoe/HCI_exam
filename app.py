@@ -6,8 +6,8 @@ from io import StringIO
 from PIL import Image
 from annotated_text import annotated_text
 
-from src.text_anonymization import anon_text, get_entity_tokens, get_non_entity_tokens
-from src.util import create_zip, v_spacer, remove_files, resize_image
+from src.text_anonymization import *
+from src.util import *
 
 # descriptions
 with open("descriptions/app.txt", 'r') as f:
@@ -43,7 +43,9 @@ menu = st.sidebar.radio("Go to", ["Getting started",
                              "Download documents"])
     
 if menu == "Getting started":
-    st.image(resize_image(logo, 0.6))
+    _, col2, _ = st.columns([0.5,2,0.5])
+    col2.image(resize_image(logo, 0.6))
+    st.markdown("---")
     st.markdown(app_description)
     with st.expander("How to use HIanonymizer"):
         st.markdown(pages_description)
@@ -154,15 +156,20 @@ if menu == "Assess documents":
         
         v_spacer(height=3)
         # save the anonymized texts
-        _, col2, _ = st.columns(3)
-        if col2.button('Save annotations'):
-            anonymized = []
-            for token in tokens:
-                if isinstance(token, tuple):
-                    anonymized.append(token[0])
-                else:
-                    anonymized.append(token)
-            st.session_state['anon_texts'][name] = ' '.join(anonymized)
+        _, col2, _, = st.columns([1.5, 1, 1.5])
+        if col2.button('Save current'):
+            st.session_state['anon_texts'][name] = anonymization_str(tokens)
+        # save all annotations
+        _, col2, _, = st.columns([2, 1, 2])
+        if col2.button("Save all"):
+            for name, text in st.session_state['uploaded_files'].items():
+                if name not in st.session_state['anon_texts'].keys():
+                    # check if annotations exists
+                    self_anno = st.session_state["self_annotate"].get(name, 
+                                                                      [[],[],[],[]])
+                    tokens = anon_text(text, st.session_state['entities'],
+                                        self_anno[0], self_anno[1], self_anno[2], self_anno[3])
+                    st.session_state['anon_texts'][name] = anonymization_str(tokens)
         
         # buttons
         col1, col2, col3, col4, col5 = st.columns(5)
@@ -214,9 +221,5 @@ if st.session_state["uploaded_files"]:
         else:
             anno_symbol = ':heavy_multiplication_x:'
         col2.write(f'Anonymized: {anno_symbol}')
-    
-    # save all annotations
-    if st.sidebar.button("save all annotations"):
-        pass
 else:
     st.sidebar.write('*None*')
