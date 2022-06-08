@@ -9,6 +9,7 @@ from annotated_text import annotated_text
 from src.text_anonymization import *
 from src.util import *
 
+
 # descriptions
 with open("descriptions/app.txt", 'r') as f:
     app_description = f.read()
@@ -52,6 +53,7 @@ if menu == "Getting started":
 
 if menu == "Upload documents":
     st.subheader(":file_folder: Upload documents")
+    st.markdown("---")
     st.write('**Upload new documents:**')
     uploaded_files = st.file_uploader("You can choose one or multiple files", 
                                         accept_multiple_files=True)
@@ -68,9 +70,13 @@ if menu == "Upload documents":
             else:
                 anno_symbol = ':heavy_multiplication_x:'
             col2.write(f'Anonymized: {anno_symbol}')
-            if i % 2 == 0:
-                col1.write('')
-                col2.write('')
+
+            m = st.markdown("""
+                <style>
+                div.stButton > button:first-child {
+                    height: 1.5em; 
+                }
+                </style>""", unsafe_allow_html=True)
             if col3.button('remove', key=f'{i}'):
                 st.session_state["uploaded_files"].pop(name)
                 if name in st.session_state['anon_texts'].keys():
@@ -89,6 +95,7 @@ if menu == "Upload documents":
     
 if menu == "Anonymization options":
     st.subheader(":hammer: Anonymization options")
+    st.markdown("---")
     # select enities
     entities = st.multiselect("Entities to anonymize", 
                               ["PER", "LOC",  "ORG"], 
@@ -99,6 +106,7 @@ if menu == "Anonymization options":
 
 if menu == "Assess documents":
     st.subheader(":eyes: Assess documents")
+    st.markdown("---")
     if not st.session_state['uploaded_files']:
         st.error("You need to upload documents to assess the anonymization")
     else:
@@ -187,6 +195,7 @@ if menu == "Assess documents":
 
 if menu == "Download documents":
     st.subheader(":inbox_tray: Download documents")
+    st.markdown("---")
 
     if not st.session_state['anon_texts']:
         st.error("You need to upload and assess the documents before you can download them.")
