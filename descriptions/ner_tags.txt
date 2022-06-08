@@ -1,0 +1,4 @@
+You can choose one or more of the three different NER-tags to be anonymized:
+- PER: personal names
+- LOC: locations
+- ORG: organizations

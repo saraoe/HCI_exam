@@ -1,0 +1,4 @@
+**HIanonymize** is an app for anonymizing text data using Hybrid Intelligence (HI). 
+The app relies on [spaCy](https://spacy.io/) for identifying and anonymizing named entites while
+still letting the user manually assess and update the annotations. By doing so, we are aiming to
+enforce optimal anonymizing of text data.

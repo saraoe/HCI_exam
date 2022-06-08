@@ -1,4 +1,3 @@
 *.ipynb
 *.pyc
-*.txt
-*.zip
+anonymized_texts/*
