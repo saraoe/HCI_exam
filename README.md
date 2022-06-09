@@ -17,45 +17,21 @@ Apart from presenting our product and the design of the product, we also discuss
 The organization of the project is as follows:
 
 ```
-▒   .gitignore
-▒   app.py
-▒   LICENSE
-▒   README.md
-▒   requirements.txt
-▒
-▒▒▒▒.streamlit
-▒       config.toml
-▒
-▒▒▒▒descriptions
-▒       app.txt
-▒       ner_tags.txt
-▒       pages.txt
-▒
-▒▒▒▒example_data
-▒       1984.txt
-▒       CL2005.txt
-▒       queenDenmark.txt
-▒       short_text.txt
-▒       short_text2.txt
-▒
-▒▒▒▒fig
-▒       logo-removebg.png
-▒
-▒▒▒▒src
-        text_anonymization.py
-        util.py
-
-
-├── README.md                  <- The top-level README for this project.
-├── example_data               <- documents for running example   
-│   └── .txt
+├── .streamlit
 ├── descriptions
-│   └── ...    
-├── src   
+│   └── ...                    <- .txt-files with descriptions for the app
+├── example_data
+│   └── .txt                   <- documents for running example   
+├── fig
+│   └── ...                    <- logo
+├── src                        <- Scripts that the app relies on
 │   ├── text_anonymization.py                 
 │   └── util.py
-├──  requirement.txt           <- A requirements file of the required packages.
-└──  app.py                    <- streamlit app
+├── .gitignore                  
+├── LICENSE                    <- License for distribution
+├── README.md                  <- The top-level README for this project.
+├── app.py                     <- The app
+└── requirements.txt           <- A requirements file of the required packages.
 ```
 
 ## Run app
