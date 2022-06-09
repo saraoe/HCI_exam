@@ -1,10 +1,10 @@
 <p align="center">
   
-![My image](https://github.com/saraoe/HCI_exam/blob/main/fig/logo-removebg.png)
+  ![My image](https://github.com/saraoe/HCI_exam/blob/main/fig/logo-removebg.png)
 
-# Human Computer Interaction Exam
+  # Human Computer Interaction Exam
 
-Exam project for Human Computer Interaction (HCI) by Emil Jessen &amp; Sara Østergaard.
+  Exam project for Human Computer Interaction (HCI) by Emil Jessen &amp; Sara Østergaard.
 </p>
 
 ## Abstract
