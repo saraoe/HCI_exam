@@ -17,6 +17,35 @@ Apart from presenting our product and the design of the product, we also discuss
 The organization of the project is as follows:
 
 ```
+▒   .gitignore
+▒   app.py
+▒   LICENSE
+▒   README.md
+▒   requirements.txt
+▒
+▒▒▒▒.streamlit
+▒       config.toml
+▒
+▒▒▒▒descriptions
+▒       app.txt
+▒       ner_tags.txt
+▒       pages.txt
+▒
+▒▒▒▒example_data
+▒       1984.txt
+▒       CL2005.txt
+▒       queenDenmark.txt
+▒       short_text.txt
+▒       short_text2.txt
+▒
+▒▒▒▒fig
+▒       logo-removebg.png
+▒
+▒▒▒▒src
+        text_anonymization.py
+        util.py
+
+
 ├── README.md                  <- The top-level README for this project.
 ├── example_data               <- documents for running example   
 │   └── .txt
