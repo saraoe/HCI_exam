@@ -29,6 +29,7 @@ The organization of the project is as follows:
 │   └── util.py
 ├── .gitignore                  
 ├── LICENSE                    <- License for distribution
+├── report.pdf                 <- Report, explaining the tool
 ├── README.md                  <- The top-level README for this project.
 ├── app.py                     <- The app
 └── requirements.txt           <- A requirements file of the required packages.
