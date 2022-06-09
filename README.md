@@ -1,4 +1,5 @@
 <p align="center">
+  
 ![My image](https://github.com/saraoe/HCI_exam/blob/main/fig/logo-removebg.png)
 
 # Human Computer Interaction Exam
