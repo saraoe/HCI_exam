@@ -1,11 +1,9 @@
 <p align="center">
-  
-  ![My image](https://github.com/saraoe/HCI_exam/blob/main/fig/logo-removebg.png)
-
-  # Human Computer Interaction Exam
-
-  Exam project for Human Computer Interaction (HCI) by Emil Jessen &amp; Sara Østergaard.
+![My image](https://github.com/saraoe/HCI_exam/blob/main/fig/logo-removebg.png)
 </p>
+# Human Computer Interaction Exam
+
+Exam project for Human Computer Interaction (HCI) by Emil Jessen &amp; Sara Østergaard.
 
 ## Abstract
 The progression in the field of NLP calls for data sharing, however, GDPR legislation restricts data distribution as much data includes identifiable information. Anonymization of documents may make data comply to legislation, and thus shareable. Manual anonymization of documents remains a cumbersome feat, partially due to the cognitive constraint of limited attention given repetitive tasks. Developments in language models provide a method for automatic annotation, however, steps toward making a widely available anonymization tool that satisfies formal legislation are needed.
