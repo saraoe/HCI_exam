@@ -4,4 +4,4 @@ letting the user manually assess and update the annotations and anonymization op
 The app is developed to afford an interactive interplay between the AI and the user by affording 
 live-feedback of any user changes. By doing so, we are aiming to support optimal anonymization of text data.
 
-For more information please refer to our [paper](https://github.com/saraoe/HCI_exam/blob/main/paper.pdf) on HIanonymize.
+For more information please refer to our [paper](https://github.com/saraoe/HCI_exam/blob/main/report.pdf) on HIanonymize.
