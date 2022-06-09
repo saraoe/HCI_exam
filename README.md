@@ -19,11 +19,11 @@ The organization of the project is as follows:
 ```
 ├── .streamlit
 ├── descriptions
-│   └── ...                    <- .txt-files with descriptions for the app
+│   └── *.txt                  <- .txt-files with descriptions for the app
 ├── example_data
-│   └── .txt                   <- documents for running example   
+│   └── *.txt                  <- documents for running example   
 ├── fig
-│   └── ...                    <- logo
+│   └── logo-removebg.png      <- logo
 ├── src                        <- Scripts that the app relies on
 │   ├── text_anonymization.py                 
 │   └── util.py
