@@ -1,10 +1,9 @@
 <p align="center">
   <a href="https://github.com/saraoe/HCI_exam">
     <img src="fig/logo-removebg.png" alt="Logo" width=760 height=183>
-    # Human Computer Interaction Exam
-    Exam project for Human Computer Interaction (HCI) by Emil Jessen &amp; Sara Østergaard.
   </a>
 </p>
+
 # Human Computer Interaction Exam
 
 Exam project for Human Computer Interaction (HCI) by Emil Jessen &amp; Sara Østergaard.
