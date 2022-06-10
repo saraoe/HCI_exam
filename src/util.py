@@ -30,6 +30,8 @@ def remove_files(folder: str):
     Args:
         folder (str): name of folder
     '''
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     for file in glob(f'{folder}/*'):
         os.remove(file)
 
