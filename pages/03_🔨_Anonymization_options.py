@@ -1,5 +1,6 @@
 import streamlit as st
 
+from src.text_anonymization import anon_text, anonymization_str
 from src.util import v_spacer
 
 ## setup ##
@@ -7,9 +8,6 @@ with open("descriptions/ner_tags.txt", 'r') as f:
     ner_description = f.read()
 with open("descriptions/anonymization_types.txt", 'r') as f:
     anon_types_description = f.read()
-
-if 'anonymization_type' not in st.session_state:
-    st.session_state['anonymization_type'] = "context_preserving"
 
 ## page begins ##
 st.subheader(":hammer: Anonymization options")
@@ -31,10 +29,25 @@ current_index = list(anon_options.values()).index(st.session_state['anonymizatio
 anonymization_type = st.selectbox("Type of anonymization",
                                    anon_options.keys(),
                                    index = current_index)
-st.session_state['anonymization_type'] = anon_options[anonymization_type]
 with st.expander("Explanation of type of anonymization"):
     st.markdown(anon_types_description)
 
+
+st.session_state['anonymization_type'] = anon_options[anonymization_type]
+
+# update previously saved anonymizations
+if st.session_state['anon_texts']:
+    with st.spinner('Updating saved anonymized documents...'):
+        for name, text in st.session_state['uploaded_files'].items():
+            if name not in st.session_state['anon_texts'].keys():
+                continue
+            # check if annotations exists
+            self_anno = st.session_state["self_annotate"].get(name, 
+                                                                [[],[],[],[]])
+            tokens = anon_text(text, 
+                                st.session_state['entities'], st.session_state['anonymization_type'],
+                                self_anno[0], self_anno[1], self_anno[2], self_anno[3])
+            st.session_state['anon_texts'][name] = anonymization_str(tokens)
 
 # sidebar uploaded documents
 v_spacer(height=3, sb=True)

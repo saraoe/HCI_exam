@@ -22,6 +22,8 @@ if "anon_texts" not in st.session_state:
     st.session_state['anon_texts'] = {}
 if "self_annotate" not in st.session_state:
     st.session_state['self_annotate'] = {}
+if 'anonymization_type' not in st.session_state:
+    st.session_state['anonymization_type'] = "context_preserving"
 
 
 ## page begins ##
