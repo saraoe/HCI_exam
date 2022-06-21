@@ -1,0 +1,8 @@
+You can choose between two anonymization types:
+
+- **Context preserving anonymization**:
+This type of anonymization keeps information about the word type.
+E.g. *"Orwell is an excellent writer"* -> *"[NAME] is an excellent writer!"*
+- **Non-context preserving anonymization**:
+This type of anonymization excludes information about the word type.
+E.g.*"Orwell is an excellent writer"* -> *"[XXX] is an excellent writer!"*
