@@ -8,6 +8,6 @@ Firstly, you must *upload documents* and chose the right *anonymization options*
 anonymization with the possibility of manually changing the annotations. When each document is
 anonymized correctly, you can save the document using the button underneath the anonymized text. You also have the possibility to simply save all 
 annotations the model has made without any assessment. 
-When all anonymized documents have been saved and saved you can *download* them on the last page.
+When all anonymized documents have been saved you can *download* them on the last page.
 
 You can always go back and forth between the different stages by using the menu on the left.
