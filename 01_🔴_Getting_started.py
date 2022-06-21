@@ -29,6 +29,7 @@ if 'anonymization_type' not in st.session_state:
 ## page begins ##
 _, col2, _ = st.columns([0.5,2,0.5])
 col2.image(resize_image(logo, 0.6))
+<<<<<<< HEAD
 # hide fullscreen option on logo
 hide_img_fs = '''
 <style>
@@ -39,6 +40,8 @@ button[title="View fullscreen"]{
 
 st.markdown(hide_img_fs, unsafe_allow_html=True)
 
+=======
+>>>>>>> fb38d397a770cf3903432d8c23683f100e40d134
 st.markdown("---")
 st.markdown(app_description)
 with st.expander("How to use HIanonymizer"):

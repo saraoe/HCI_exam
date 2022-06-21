@@ -1,10 +1,15 @@
 import streamlit as st
 
+<<<<<<< HEAD
 from src.text_anonymization import anon_text, anonymization_str
 from src.util import v_spacer, create_zip, remove_files
 
 ## setup ##
 ex_text = "My neighbor Laura is moving because she got a job at Apple in California."
+=======
+from src.util import v_spacer, create_zip, remove_files
+
+>>>>>>> fb38d397a770cf3903432d8c23683f100e40d134
 
 ## page begins ##
 st.subheader(":inbox_tray: Download documents")
@@ -13,6 +18,7 @@ st.markdown("---")
 if not st.session_state['anon_texts']:
     st.error("You need to upload and assess the documents before you can download them.")
 else:
+<<<<<<< HEAD
     st.write(f'You have anonymized {len(st.session_state["anon_texts"])} document(s).')
     # example of anonymized text
     with st.expander('See example of anonymized texts'):
@@ -28,6 +34,10 @@ else:
 
     # options for download
     v_spacer(height=2)
+=======
+    # settings
+    st.write(f'You have anonymized {len(st.session_state["anon_texts"])} document(s).')
+>>>>>>> fb38d397a770cf3903432d8c23683f100e40d134
     st.write("You can chose the file type you want the downloaded files in and the prefix of the anonymized files.")
     file_type = st.selectbox("File type", [".txt", ".pdf", ".docx"])
     prefix = st.text_input("Prefix", "anon")
