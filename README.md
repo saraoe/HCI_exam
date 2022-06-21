@@ -42,7 +42,9 @@ pip install -r requirements.txt
 ```
 
 ```
-streamlit run app.py
+streamlit run 01_🔴_Getting_started.py
 ```
 
 You can use you own files to test the app or use the documents in the folder ```example_data```.
+
+**NB** changes have been made to the app since the report was written, thus, differences in both appearance and functionality exists between the visualizations in the report and the current version of the app.
